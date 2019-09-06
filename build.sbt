@@ -20,9 +20,17 @@ lazy val analysisPlugin = project.settings(
     scalaVersion:= V.scala212,
     libraryDependencies += "org.scala-lang" % "scala-compiler" % V.scala212,
     libraryDependencies += "org.scala-lang" % "scala-reflect" % V.scala212,
+
+    // TODO This is broken - it is not appe
+    libraryDependencies in Test += "org.scalameta" % "semanticdb-scalac-core_2.12.9" % "4.2.3" % Compile,
+
     scalacOptions in Test ++= {
       val jar = (packageBin in Compile).value
-      Seq(s"-Xplugin:${jar.getAbsolutePath}", s"-Jdummy=${jar.lastModified}") // ensures recompile
+      Seq(
+        s"-Xplugin:${jar.getAbsolutePath}",
+        s"-Jdummy=${jar.lastModified}", // ensures recompile
+      )
+
     },
     scalacOptions in Test += "-Yrangepos",
     fork in Test := true
